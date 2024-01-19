@@ -1,35 +1,94 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useCallback, useEffect, useState } from "react";
+import "./App.css";
+
+import {
+  Connect,
+  ChangePizzaPrice,
+  CreateOrder,
+  PreviousOrders,
+} from "./components";
+import { shortenAddress, sortOrders } from "./utils";
+import { ethers } from "ethers";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [account, setAccount] = useState(null);
+  const [contract, setContract] = useState(null);
+  const [isOrdersLoading, setOrdersIsLoading] = useState(true);
+  const [pizzaPrice, setPizzaPrice] = useState(null);
+  const [isPriceLoading, setPriceIsLoading] = useState(true);
+  const [orders, setOrders] = useState([]);
+
+  const fetchOrders = useCallback(async () => {
+    if (!account || !contract) return;
+
+    const tempOrders = await contract.getCustomerOrders();
+
+    setOrders(sortOrders(tempOrders));
+    setOrdersIsLoading(false);
+  }, [account, contract]);
+
+  const fetchPizzaPrice = useCallback(async () => {
+    if (!account || !contract) return;
+
+    setPriceIsLoading(true);
+
+    const pizzaPrice = await contract.pizzaPrice();
+
+    setPizzaPrice(ethers.formatEther(pizzaPrice));
+    setPriceIsLoading(false);
+  }, [account, contract]);
+
+  useEffect(() => {
+    fetchPizzaPrice();
+    fetchOrders();
+  }, [fetchOrders, fetchPizzaPrice]);
+
+  window.ethereum.on("accountsChanged", ([newAddress]) => {
+    if (newAddress === undefined) return;
+    window.location.reload();
+  });
+
+  const accountDisplay = account ? shortenAddress(account) : null;
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <em>Crypto Pet Project: Web3 Application</em>
+      <h1>Pizza Order</h1>
+      <h2>Your current account: {accountDisplay}</h2>
+      {isPriceLoading ? (
+        <span>Loading..</span>
+      ) : (
+        <h3>The price of the pizza: {pizzaPrice} ETH</h3>
+      )}
+      <Connect
+        account={account}
+        setAccount={setAccount}
+        setContract={setContract}
+      />
+      <CreateOrder
+        account={account}
+        contract={contract}
+        fetchOrders={fetchOrders}
+        pizzaPrice={pizzaPrice}
+        isPriceLoading={isPriceLoading}
+      />
+      {isOrdersLoading ? (
+        <p>loading orders</p>
+      ) : (
+        <PreviousOrders
+          account={account}
+          contract={contract}
+          fetchOrders={fetchOrders}
+          orders={orders}
+        />
+      )}
+      <ChangePizzaPrice
+        account={account}
+        contract={contract}
+        fetchPizzaPrice={fetchPizzaPrice}
+      />
+    </div>
+  );
 }
 
-export default App
+export default App;
