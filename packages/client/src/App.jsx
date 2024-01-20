@@ -72,16 +72,13 @@ function App() {
         pizzaPrice={pizzaPrice}
         isPriceLoading={isPriceLoading}
       />
-      {isOrdersLoading ? (
-        <p>loading orders</p>
-      ) : (
-        <PreviousOrders
-          account={account}
-          contract={contract}
-          fetchOrders={fetchOrders}
-          orders={orders}
-        />
-      )}
+      <PreviousOrders
+        account={account}
+        contract={contract}
+        fetchOrders={fetchOrders}
+        orders={orders}
+        isOrdersLoading={isOrdersLoading}
+      />
       <ChangePizzaPrice
         account={account}
         contract={contract}

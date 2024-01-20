@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 
-import styles from "../styles/Block.module.css";
+import styles from "../styles/Common.module.css";
 
 function ChangePizzaPrice({ account, contract, fetchPizzaPrice }) {
   const [pizzaPriceInputValue, setPizzaPriceInputValue] = useState("");

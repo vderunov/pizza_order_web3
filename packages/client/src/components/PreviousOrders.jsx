@@ -1,14 +1,13 @@
 import likeIcon from "../assets/like.png";
 import { useState } from "react";
 
-import styles from "../styles/Block.module.css";
-import ordersStyles from "../styles/PreviousOrders.module.css";
+import styles from "../styles/Common.module.css";
 
 const OrdersList = ({ orders, handleClick, currentlyLikingOrderId }) => {
   return (
-    <div className={ordersStyles.ordersList}>
+    <div className={styles.ordersList}>
       {orders.map(({ pizzaType, like, id }, index) => (
-        <div key={index} className={ordersStyles.orderItem}>
+        <div key={index} className={styles.orderItem}>
           {pizzaType}
           {like ? (
             <img src={likeIcon} alt="Like" width="20px" />
@@ -23,7 +22,13 @@ const OrdersList = ({ orders, handleClick, currentlyLikingOrderId }) => {
   );
 };
 
-const PreviousOrders = ({ orders, contract, account, fetchOrders }) => {
+const PreviousOrders = ({
+  orders,
+  isOrdersLoading,
+  contract,
+  account,
+  fetchOrders,
+}) => {
   const [currentlyLikingOrderId, setCurrentlyLikingOrderId] = useState(null);
 
   const fetchLikePizza = async (id) => {
@@ -53,11 +58,15 @@ const PreviousOrders = ({ orders, contract, account, fetchOrders }) => {
   return (
     <div className={styles.block}>
       <h3>Previous orders:</h3>
-      <OrdersList
-        orders={orders}
-        handleClick={handleClick}
-        currentlyLikingOrderId={currentlyLikingOrderId}
-      />
+      {isOrdersLoading ? (
+        <p>Loading..</p>
+      ) : (
+        <OrdersList
+          orders={orders}
+          handleClick={handleClick}
+          currentlyLikingOrderId={currentlyLikingOrderId}
+        />
+      )}
     </div>
   );
 };
