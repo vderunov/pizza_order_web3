@@ -1,0 +1,7 @@
+{
+  "name": "pizza-monorepo",
+  "workspaces": [
+    "packages/*"
+  ],
+  "private": true
+}
