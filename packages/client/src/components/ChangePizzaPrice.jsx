@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { ethers } from "ethers";
 
-import styles from "../styles/Common.module.css";
+import { ethers } from "ethers";
+import { toast } from "react-toastify";
 
 function ChangePizzaPrice({ account, contract, fetchPizzaPrice }) {
   const [pizzaPriceInputValue, setPizzaPriceInputValue] = useState("");
@@ -15,6 +15,7 @@ function ChangePizzaPrice({ account, contract, fetchPizzaPrice }) {
 
   const handleClick = async () => {
     if (!contract || !account) {
+      toast.info("No ethereum object");
       console.error("No ethereum object");
       return;
     }
@@ -26,33 +27,41 @@ function ChangePizzaPrice({ account, contract, fetchPizzaPrice }) {
       console.log(`Transaction hash: ${tx.hash}`);
       fetchPizzaPrice();
     } catch (error) {
-      console.error(`Error in transaction: ${error.message}`);
+      toast.info("Error in transaction");
+      console.error(`Error in transaction: ${error}`);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className={styles.block}>
-      <h3>
-        Change pizza price (<em>Only the owner</em>)
-      </h3>
-      <input
-        placeholder="Amount (ETH)"
-        type="number"
-        step="0.001"
-        value={pizzaPriceInputValue}
-        onChange={(e) => setPizzaPriceInputValue(e.target.value)}
-        disabled={isLoading}
-      />
-      <button
-        type="button"
-        onClick={handleClick}
-        disabled={isLoading || !pizzaPriceInputValue}
-      >
-        {isLoading ? "Loading.." : "Change Price"}
-      </button>
-    </div>
+    <article>
+      <div className="row">
+        <div className="max">
+          <h5>
+            Change pizza price (<em>Only the owner</em>)
+          </h5>
+          <div className="field border">
+            <input
+              type="number"
+              placeholder="Amount (ETH)"
+              step="0.001"
+              value={pizzaPriceInputValue}
+              onChange={(e) => setPizzaPriceInputValue(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+      <nav>
+        {isLoading ? (
+          <progress className="circle small"></progress>
+        ) : (
+          <button onClick={handleClick} disabled={!pizzaPriceInputValue}>
+            Change Price
+          </button>
+        )}
+      </nav>
+    </article>
   );
 }
 

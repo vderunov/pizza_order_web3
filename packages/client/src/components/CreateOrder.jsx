@@ -1,8 +1,9 @@
 import { useState } from "react";
 
 import { ethers } from "ethers";
+import { toast } from "react-toastify";
 
-import styles from "../styles/Common.module.css";
+import pizzaOrderImg from "../assets/pizza-order.jpg";
 
 const { ethereum } = window;
 
@@ -35,30 +36,40 @@ function CreateOrder({
       console.log(`Transaction hash: ${tx.hash}`);
       fetchOrders();
     } catch (error) {
-      console.error(`Error in transaction: ${error.message}`);
+      toast.info("Error in transaction");
+      console.error(`Error in transaction: ${error}`);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className={styles.block}>
-      <label>
-        Choose Pizza Type:
-        <select
-          value={pizzaType}
-          onChange={(e) => setPizzaType(e.target.value)}
-        >
-          <option value="pepperoni">Pepperoni</option>
-          <option value="margherita">Margherita</option>
-          <option value="cheese">Cheese</option>
-        </select>
-      </label>
-      <br />
-      <button type="button" disabled={isLoading} onClick={handleClick}>
-        {isLoading || isPriceLoading ? "Loading.." : "Buy"}
-      </button>
-    </div>
+    <article>
+      <div className="row">
+        <img className="circle large" src={pizzaOrderImg} alt="pizza" />
+        <div className="max">
+          <h5>Choose Pizza Type</h5>
+          <div className="field suffix border small">
+            <select
+              value={pizzaType}
+              onChange={(e) => setPizzaType(e.target.value)}
+            >
+              <option value="pepperoni">Pepperoni</option>
+              <option value="margherita">Margherita</option>
+              <option value="cheese">Cheese</option>
+            </select>
+            <i>arrow_drop_down</i>
+          </div>
+        </div>
+      </div>
+      <nav>
+        {isLoading || isPriceLoading ? (
+          <progress className="circle small"></progress>
+        ) : (
+          <button onClick={handleClick}>Order Pizza</button>
+        )}
+      </nav>
+    </article>
   );
 }
 

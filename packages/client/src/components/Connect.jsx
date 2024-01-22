@@ -1,6 +1,9 @@
-import { Contract, ethers } from "ethers";
-import { contractABI, contractAddress } from "../utils";
 import { useCallback, useEffect } from "react";
+
+import { Contract, ethers } from "ethers";
+import { toast } from "react-toastify";
+
+import { contractABI, contractAddress } from "../utils";
 
 const getEthereumContract = async () => {
   const provider = new ethers.BrowserProvider(window.ethereum);
@@ -14,7 +17,7 @@ const processEthereumAccountsRequest = async (
   setAccount,
   setContract,
 ) => {
-  if (!window.ethereum) return alert("MetaMask is not installed");
+  if (!window.ethereum) return toast.info("MetaMask is not installed");
 
   const accounts = await window.ethereum.request({ method });
 
@@ -23,6 +26,7 @@ const processEthereumAccountsRequest = async (
     setAccount(accounts[0]);
     setContract(contract);
   } else {
+    toast.info("No accounts found", { toastId: "no-accounts-found" });
     console.log("No accounts found");
   }
 };

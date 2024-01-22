@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import "./App.css";
 
+import { ethers } from "ethers";
+import { ToastContainer } from "react-toastify";
+
+import ethereumImg from "./assets/ethereum.png";
 import {
   Connect,
   ChangePizzaPrice,
@@ -8,7 +11,6 @@ import {
   PreviousOrders,
 } from "./components";
 import { shortenAddress, sortOrders } from "./utils";
-import { ethers } from "ethers";
 
 function App() {
   const [account, setAccount] = useState(null);
@@ -51,40 +53,67 @@ function App() {
   const accountDisplay = account ? shortenAddress(account) : null;
 
   return (
-    <div>
-      <em>Crypto Pet Project: Web3 Application</em>
-      <h1>Pizza Order</h1>
-      <h2>Your current account: {accountDisplay}</h2>
-      {isPriceLoading ? (
-        <span>Loading..</span>
-      ) : (
-        <h3>The price of the pizza: {pizzaPrice} ETH</h3>
-      )}
-      <Connect
-        account={account}
-        setAccount={setAccount}
-        setContract={setContract}
-      />
-      <CreateOrder
-        account={account}
-        contract={contract}
-        fetchOrders={fetchOrders}
-        pizzaPrice={pizzaPrice}
-        isPriceLoading={isPriceLoading}
-      />
-      <PreviousOrders
-        account={account}
-        contract={contract}
-        fetchOrders={fetchOrders}
-        orders={orders}
-        isOrdersLoading={isOrdersLoading}
-      />
-      <ChangePizzaPrice
-        account={account}
-        contract={contract}
-        fetchPizzaPrice={fetchPizzaPrice}
-      />
-    </div>
+    <>
+      <header>
+        <nav>
+          <h5 className="max center-align">
+            Crypto Pet Project: Web3 Application
+          </h5>
+          <Connect
+            account={account}
+            setAccount={setAccount}
+            setContract={setContract}
+          />
+        </nav>
+      </header>
+
+      <main className="responsive">
+        <h1 className="center-align">Pizza Order</h1>
+        <div className="row">
+          <article>
+            <div className="row">
+              <img className="circle large" src={ethereumImg} alt="ethereum" />
+              <div className="max">
+                <h5>Ethereum</h5>
+                <p>Your current account: {accountDisplay}</p>
+              </div>
+            </div>
+          </article>
+          <article>
+            <h5>The price of the pizza</h5>
+            {isPriceLoading ? (
+              <progress className="circle small"></progress>
+            ) : (
+              <p>{pizzaPrice} ETH</p>
+            )}
+          </article>
+        </div>
+        <div className="large-divider"></div>
+        <div className="row">
+          <CreateOrder
+            account={account}
+            contract={contract}
+            fetchOrders={fetchOrders}
+            pizzaPrice={pizzaPrice}
+            isPriceLoading={isPriceLoading}
+          />
+          <ChangePizzaPrice
+            account={account}
+            contract={contract}
+            fetchPizzaPrice={fetchPizzaPrice}
+          />
+        </div>
+        <div className="large-divider"></div>
+        <PreviousOrders
+          account={account}
+          contract={contract}
+          fetchOrders={fetchOrders}
+          orders={orders}
+          isOrdersLoading={isOrdersLoading}
+        />
+      </main>
+      <ToastContainer progressStyle={{ background: "var(--primary)" }} />
+    </>
   );
 }
 
