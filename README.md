@@ -1,10 +1,6 @@
 # Pizza Order (Ethereum Pet Project: Web3 Application)
 
----
-
 ## Description
-
----
 
 The primary objective of this pet project is practising and getting hands-on experience with the fundamental 
 functionalities of a Web 3.0 Blockchain application. The project is built using React.js and focuses on mastering 
@@ -27,9 +23,9 @@ The project is organized into two main workspaces:
 
 - **OpenZeppelin**: A library for secure smart contract development for Ethereum and other EVM and eWASM blockchains. It provides tested, community-reviewed code for a variety of standard contracts and tokens.
 
-## Running the Application
+- **Solidity**: A programming language used for developing smart contracts on Ethereum and other blockchain platforms.
 
----
+## Running the Application
 
 To interact with the application, you need the following prerequisites:
 
