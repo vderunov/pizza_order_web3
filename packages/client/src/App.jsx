@@ -57,7 +57,7 @@ function App() {
       <header>
         <nav>
           <h5 className="max center-align">
-            Crypto Pet Project: Web3 Application
+            Ethereum Pet Project: Web3 Application
           </h5>
           <Connect
             account={account}
