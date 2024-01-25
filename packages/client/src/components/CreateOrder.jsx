@@ -5,15 +5,7 @@ import { toast } from "react-toastify";
 
 import pizzaOrderImg from "../assets/pizza-order.jpg";
 
-const { ethereum } = window;
-
-function CreateOrder({
-  account,
-  contract,
-  fetchOrders,
-  pizzaPrice,
-  isPriceLoading,
-}) {
+function CreateOrder({ account, contract, fetchOrders, pizzaPrice }) {
   const [pizzaType, setPizzaType] = useState("margherita");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,7 +16,7 @@ function CreateOrder({
   };
 
   const handleClick = async () => {
-    if (!ethereum || !contract || !account || !pizzaPrice) {
+    if (!contract || !account) {
       console.error("No ethereum object");
       return;
     }
@@ -63,10 +55,12 @@ function CreateOrder({
         </div>
       </div>
       <nav>
-        {isLoading || isPriceLoading ? (
+        {isLoading ? (
           <progress className="circle small"></progress>
         ) : (
-          <button onClick={handleClick}>Order Pizza</button>
+          <button onClick={handleClick} disabled={!pizzaPrice}>
+            Order Pizza
+          </button>
         )}
       </nav>
     </article>

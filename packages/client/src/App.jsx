@@ -15,9 +15,7 @@ import { shortenAddress, sortOrders } from "./utils";
 function App() {
   const [account, setAccount] = useState(null);
   const [contract, setContract] = useState(null);
-  const [isOrdersLoading, setOrdersIsLoading] = useState(true);
   const [pizzaPrice, setPizzaPrice] = useState(null);
-  const [isPriceLoading, setPriceIsLoading] = useState(true);
   const [orders, setOrders] = useState([]);
 
   const fetchOrders = useCallback(async () => {
@@ -26,18 +24,14 @@ function App() {
     const tempOrders = await contract.getCustomerOrders();
 
     setOrders(sortOrders(tempOrders));
-    setOrdersIsLoading(false);
   }, [account, contract]);
 
   const fetchPizzaPrice = useCallback(async () => {
     if (!account || !contract) return;
 
-    setPriceIsLoading(true);
-
     const pizzaPrice = await contract.pizzaPrice();
 
     setPizzaPrice(ethers.formatEther(pizzaPrice));
-    setPriceIsLoading(false);
   }, [account, contract]);
 
   useEffect(() => {
@@ -45,10 +39,12 @@ function App() {
     fetchOrders();
   }, [fetchOrders, fetchPizzaPrice]);
 
-  window.ethereum.on("accountsChanged", ([newAddress]) => {
-    if (newAddress === undefined) return;
-    window.location.reload();
-  });
+  if (typeof window.ethereum !== "undefined") {
+    window.ethereum.on("accountsChanged", ([newAddress]) => {
+      if (newAddress === undefined) return;
+      window.location.reload();
+    });
+  }
 
   const accountDisplay = account ? shortenAddress(account) : null;
 
@@ -81,11 +77,7 @@ function App() {
           </article>
           <article>
             <h5>The price of the pizza</h5>
-            {isPriceLoading ? (
-              <progress className="circle small"></progress>
-            ) : (
-              <p>{pizzaPrice} ETH</p>
-            )}
+            <p>{pizzaPrice ? `${pizzaPrice} ETH` : "Price not available"}</p>
           </article>
         </div>
         <div className="large-divider"></div>
@@ -95,7 +87,6 @@ function App() {
             contract={contract}
             fetchOrders={fetchOrders}
             pizzaPrice={pizzaPrice}
-            isPriceLoading={isPriceLoading}
           />
           <ChangePizzaPrice
             account={account}
@@ -109,7 +100,6 @@ function App() {
           contract={contract}
           fetchOrders={fetchOrders}
           orders={orders}
-          isOrdersLoading={isOrdersLoading}
         />
       </main>
       <ToastContainer progressStyle={{ background: "var(--primary)" }} />

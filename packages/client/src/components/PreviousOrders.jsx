@@ -46,13 +46,7 @@ const OrdersList = ({ orders, handleClick, currentlyLikingOrderId }) => {
   });
 };
 
-const PreviousOrders = ({
-  orders,
-  isOrdersLoading,
-  contract,
-  account,
-  fetchOrders,
-}) => {
+const PreviousOrders = ({ orders, contract, account, fetchOrders }) => {
   const [currentlyLikingOrderId, setCurrentlyLikingOrderId] = useState(null);
 
   const fetchLikePizza = async (id) => {
@@ -92,15 +86,11 @@ const PreviousOrders = ({
         }}
       >
         <h3>Previous orders:</h3>
-        {isOrdersLoading ? (
-          <progress className="circle"></progress>
-        ) : (
-          <OrdersList
-            orders={orders}
-            handleClick={handleClick}
-            currentlyLikingOrderId={currentlyLikingOrderId}
-          />
-        )}
+        <OrdersList
+          orders={orders}
+          handleClick={handleClick}
+          currentlyLikingOrderId={currentlyLikingOrderId}
+        />
       </div>
     </div>
   );
