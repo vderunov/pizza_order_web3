@@ -17,18 +17,44 @@ const getEthereumContract = async () => {
   }
 };
 
+const requestSwitchEthereumChain = async (chainId) => {
+  return await window.ethereum.request({
+    method: "wallet_switchEthereumChain",
+    params: [{ chainId }],
+  });
+};
+
+const addToMetaMask = async (chainId) => {
+  const params = {
+    chainId,
+    chainName: "Sepolia",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: ["https://rpc.sepolia.org"],
+  };
+
+  return await window.ethereum.request({
+    method: "wallet_addEthereumChain",
+    params: [params],
+  });
+};
+
 function Connect({ account, setAccount, setContract }) {
   const chainIdSepolia = "0xaa36a7";
 
   const switchToSepolia = async () => {
     try {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: chainIdSepolia }],
-      });
+      await requestSwitchEthereumChain(chainIdSepolia);
     } catch (switchError) {
       if (switchError.code === 4902) {
-        console.error("switch error: 4902");
+        try {
+          await addToMetaMask(chainIdSepolia);
+        } catch (error) {
+          console.error("Failed to add Sepolia network to MetaMask", error);
+        }
       } else {
         console.error("Failed to switch to Sepolia network", switchError);
       }
